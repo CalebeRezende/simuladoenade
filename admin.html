@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin — Simulado ENADE/PND 2025</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+</head>
+<body>
+<header>
+  <div class="topbar">
+    <h1>Admin — resultados do simulado</h1>
+    <a class="btnlink secondary" href="index.html">Voltar ao simulado</a>
+  </div>
+</header>
+
+<main>
+  <section id="loginPanel" class="painel" style="display:none">
+    <h2>Entrar como admin</h2>
+    <p class="muted">
+      Use o e-mail e a senha do usuário criado no Supabase Auth. Para segurança, desative o cadastro público no Supabase ou permita apenas seu usuário.
+    </p>
+    <div class="controles">
+      <div>
+        <label for="adminEmail">E-mail</label>
+        <input id="adminEmail" type="email" placeholder="seu@email.com" />
+      </div>
+      <div>
+        <label for="adminPassword">Senha</label>
+        <input id="adminPassword" type="password" placeholder="Senha" />
+      </div>
+      <button id="loginBtn">Entrar</button>
+    </div>
+    <div id="loginStatus" style="margin-top:12px"></div>
+  </section>
+
+  <section id="dashboardPanel" class="painel" style="display:none">
+    <div class="answerHeader">
+      <h2>Painel de acompanhamento</h2>
+      <div class="answerActions">
+        <button class="secondary" id="refreshBtn">Atualizar</button>
+        <button class="secondary" id="exportBtn">Exportar CSV</button>
+        <button class="danger" id="logoutBtn">Sair</button>
+      </div>
+    </div>
+
+    <div class="controles" style="margin-bottom:12px">
+      <div>
+        <label for="searchBox">Filtrar por nome, e-mail, prova ou nota</label>
+        <input id="searchBox" type="text" placeholder="Digite para filtrar" />
+      </div>
+    </div>
+
+    <div id="kpis" class="admin-grid"></div>
+
+    <h3>Tentativas enviadas</h3>
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Participante</th>
+            <th>Nota</th>
+            <th>Acertos</th>
+            <th>Erros</th>
+            <th>Branco</th>
+            <th>Prova/Gabarito</th>
+            <th>Envio</th>
+            <th>Início</th>
+            <th>Detalhe</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <tr><td colspan="9">Carregando...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<dialog id="detailDialog">
+  <div id="detailContent"></div>
+  <div style="margin-top:16px">
+    <button id="closeDialog">Fechar</button>
+  </div>
+</dialog>
+
+<script type="module" src="assets/admin.js"></script>
+</body>
+</html>
