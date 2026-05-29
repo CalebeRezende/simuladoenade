@@ -4,5 +4,5 @@
 // 3. Copie o Project URL e a anon public key em Project Settings > API.
 // 4. Cole abaixo.
 
-window.SUPABASE_URL = "COLE_AQUI_A_URL_DO_SEU_PROJETO_SUPABASE";
-window.SUPABASE_ANON_KEY = "COLE_AQUI_A_CHAVE_ANON_PUBLIC_DO_SUPABASE";
+window.SUPABASE_URL = "https://sdaxxrphbvxoertnofnw.supabase.co/rest/v1/";
+window.SUPABASE_ANON_KEY = "sb_publishable_qB03yFr7MZg2va7FZZg0oA_wKf8rJHW";
