@@ -87,6 +87,7 @@ async function loadAttempts() {
   attemptsCache = data || [];
   renderKpis();
   renderTable(attemptsCache);
+  renderQuestionStats();
 }
 
 function getFilteredData() {
@@ -139,6 +140,77 @@ function renderTable(data) {
   el("tableBody").querySelectorAll("button[data-id]").forEach(btn => {
     btn.addEventListener("click", () => showDetails(btn.dataset.id));
   });
+}
+
+function populateQuestionStatsFilter() {
+  const select = el("questionStatsFilter");
+  const combos = new Map();
+  attemptsCache.forEach(a => {
+    if (a.gabarito_codigo) combos.set(a.gabarito_codigo, a.gabarito_label || a.gabarito_codigo);
+  });
+
+  const previous = select.value;
+  select.innerHTML = Array.from(combos.entries())
+    .map(([value, label]) => `<option value="${value}">${label}</option>`)
+    .join("");
+
+  if (combos.has(previous)) select.value = previous;
+}
+
+function computeQuestionStats(gabaritoCodigo) {
+  const stats = new Map();
+
+  attemptsCache
+    .filter(a => a.gabarito_codigo === gabaritoCodigo)
+    .forEach(a => {
+      const rows = Array.isArray(a.correcao) ? a.correcao : [];
+      rows.forEach(r => {
+        if (r.official === "ANULADA") return;
+
+        if (!stats.has(r.q)) {
+          stats.set(r.q, { q: r.q, official: r.official, total: 0, ok: 0, wrong: 0, blank: 0 });
+        }
+        const s = stats.get(r.q);
+        s.total++;
+        if (r.status === "ok") s.ok++;
+        else if (!r.selected || r.selected === "—") s.blank++;
+        else s.wrong++;
+      });
+    });
+
+  return Array.from(stats.values())
+    .map(s => ({ ...s, errorRate: s.total ? ((s.wrong + s.blank) / s.total) * 100 : 0 }))
+    .sort((a, b) => b.errorRate - a.errorRate || a.q - b.q);
+}
+
+function renderQuestionStats() {
+  populateQuestionStatsFilter();
+  const select = el("questionStatsFilter");
+  const gabaritoCodigo = select.value;
+
+  if (!gabaritoCodigo) {
+    el("questionStatsBody").innerHTML = `<tr><td colspan="7">Nenhuma tentativa encontrada ainda.</td></tr>`;
+    return;
+  }
+
+  const stats = computeQuestionStats(gabaritoCodigo);
+
+  if (!stats.length) {
+    el("questionStatsBody").innerHTML = `<tr><td colspan="7">Sem dados para este gabarito.</td></tr>`;
+    return;
+  }
+
+  el("questionStatsBody").innerHTML = stats.map(s => `
+    <tr>
+      <td><strong>Q${String(s.q).padStart(2,"0")}</strong></td>
+      <td>${s.official}</td>
+      <td>${s.total}</td>
+      <td>${s.ok}</td>
+      <td>${s.wrong}</td>
+      <td>${s.blank}</td>
+      <td><span class="pill${s.errorRate >= 50 ? " erroAlto" : ""}">${s.errorRate.toFixed(0)}%</span></td>
+    </tr>
+  `).join("");
 }
 
 function applyFilter() {
@@ -212,6 +284,7 @@ el("logoutBtn").addEventListener("click", logout);
 el("refreshBtn").addEventListener("click", loadAttempts);
 el("exportBtn").addEventListener("click", exportCsv);
 el("searchBox").addEventListener("input", applyFilter);
+el("questionStatsFilter").addEventListener("change", renderQuestionStats);
 el("closeDialog").addEventListener("click", () => el("detailDialog").close());
 
 init();
