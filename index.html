@@ -1,67 +1,75 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Simulados por questões recortadas</title>
-  <link rel="stylesheet" href="assets/style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Simulado ENADE/PND 2025 — Pedagogia</title>
+  <link rel="stylesheet" href="assets/style.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
 </head>
 <body>
 <header>
   <div class="topbar">
-    <h1>Simulados ENADE/PND — questões recortadas</h1>
-    <div class="timer" id="timer">--:--:--</div>
-    <div class="actions noPrint">
-      <a class="btnlink secondary" href="admin.html">Acesso admin</a>
-      <a class="btnlink secondary" href="cropper.html">Recortador</a>
-    </div>
+    <h1>Simulado ENADE/PND 2025 — Pedagogia</h1>
+    <div class="timer" id="timer">04:00:00</div>
   </div>
 </header>
-
 <main>
-  <section id="examChooser" class="painel">
-    <h2>Escolha um simulado</h2>
-    <p class="muted">
-      O aluno vê apenas as questões selecionadas pelo professor, preservando a imagem recortada do PDF original.
-    </p>
-    <div id="examList"></div>
-  </section>
-
-  <section id="studentPanel" class="painel">
-    <h2>Identificação</h2>
-    <div id="setup" class="hide">
-      <h3 id="selectedTitle"></h3>
-      <div class="row">
-        <div class="medium">
-          <label>Nome</label>
-          <input id="studentName" placeholder="Digite seu nome">
-        </div>
-        <div class="medium">
-          <label>E-mail, opcional</label>
-          <input id="studentEmail" type="email" placeholder="email@exemplo.com">
-        </div>
-        <button id="startBtn" class="success">Começar simulado</button>
+  <section class="painel">
+    <div class="controles">
+      <div class="setupOnly">
+        <label for="studentName">Nome da pessoa</label>
+        <input id="studentName" type="text" placeholder="Digite o nome" />
       </div>
+      <div class="setupOnly">
+        <label for="studentEmail">E-mail, opcional</label>
+        <input id="studentEmail" type="email" placeholder="email@exemplo.com" />
+      </div>
+      <div class="setupOnly">
+        <label for="pdfSelect">Escolha a prova / caderno</label>
+        <select id="pdfSelect"></select>
+      </div>
+      <div class="setupOnly">
+        <label for="keySelect">Escolha o gabarito para correção</label>
+        <select id="keySelect"></select>
+      </div>
+      <button class="setupOnly" id="startBtn">Iniciar / continuar</button>
+      <button class="secondary setupOnly" id="saveBtn" disabled>Salvar respostas</button>
+      <button class="secondary" id="printBtn" disabled>Imprimir resultado</button>
+      <button class="danger" id="resetBtn">Zerar tentativa</button>
+      <a class="btnlink secondary" href="admin.html">Acesso admin</a>
+    </div>
+    <div class="alerta">
+      <strong>Atenção:</strong> a prova e o gabarito são escolhidos separadamente. Para corrigir corretamente, selecione o gabarito correspondente ao tipo do caderno. A tentativa tem <strong>4 horas</strong>. Ao finalizar, as respostas são bloqueadas e a nota é salva no Supabase no formato <strong>acertos de 80</strong>, por exemplo, <strong>40 de 80</strong>.
     </div>
   </section>
 
-  <section id="examArea" class="painel hide">
-    <div class="qhead">
-      <div>
-        <h2 id="examTitle"></h2>
-        <span class="pill" id="qCount"></span>
-      </div>
-      <div class="actions noPrint">
-        <button class="success" id="submitBtn">Finalizar e corrigir</button>
-        <button class="secondary" id="printBtn">Imprimir</button>
-      </div>
+  <section class="grid">
+    <div class="painel pdfbox">
+      <object id="pdfViewer" data="pdfs/prova_tipo_1.pdf#view=FitH" type="application/pdf">
+        <p>Seu navegador não abriu o PDF automaticamente. Abra o PDF na pasta <code>pdfs</code>.</p>
+      </object>
     </div>
 
-    <div id="saveStatus"></div>
-    <div id="resultado" class="resultado"></div>
-    <div id="questions"></div>
+    <div class="painel answerbox">
+      <div class="answerHeader">
+        <h2>Cartão-resposta</h2>
+        <div class="answerActions">
+          <button class="success" id="submitBtn" disabled>Finalizar e corrigir</button>
+        </div>
+      </div>
+
+      <p id="answerIntro" class="muted">
+        Marque A, B, C ou D para as 80 questões objetivas. As respostas ficam salvas neste navegador enquanto a tentativa estiver ativa. Ao finalizar, a área de respostas some, a correção aparece no topo e o resultado é enviado para o banco de dados.
+      </p>
+
+      <div id="resultado" class="resultado"></div>
+
+      <form id="answerForm">
+        <div id="questoes" class="questoes"></div>
+      </form>
+    </div>
   </section>
 </main>
 
