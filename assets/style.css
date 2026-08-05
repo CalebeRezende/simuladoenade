@@ -168,6 +168,7 @@ th, td { border-bottom:1px solid #eee; padding:10px; text-align:left; vertical-a
 th { color:var(--roxo); background:#fbf8fd; position:sticky; top:0; }
 tr:hover td { background:#fffafd; }
 .pill { display:inline-flex; border-radius:999px; padding:4px 8px; background:#ede5f1; color:var(--roxo); font-weight:800; font-size:.8rem; }
+.pill.erroAlto { background:#fee4e2; color:var(--erro); }
 dialog { width:min(1000px, 94vw); border:0; border-radius:18px; box-shadow:0 20px 60px rgba(0,0,0,.25); }
 dialog::backdrop { background:rgba(30,10,40,.45); }
 #detailContent .correcao { grid-template-columns: repeat(8, minmax(0,1fr)); }

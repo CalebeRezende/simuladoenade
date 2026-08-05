@@ -55,6 +55,33 @@
 
     <div id="kpis" class="admin-grid"></div>
 
+    <h3>Questões mais erradas</h3>
+    <p class="muted">Soma os acertos, erros e brancos de todas as tentativas de cada gabarito, questão por questão, para mostrar onde os alunos mais erram.</p>
+    <div class="controles" style="margin-bottom:12px">
+      <div>
+        <label for="questionStatsFilter">Gabarito para analisar</label>
+        <select id="questionStatsFilter"></select>
+      </div>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Questão</th>
+            <th>Gabarito oficial</th>
+            <th>Respondida</th>
+            <th>Acertos</th>
+            <th>Erros</th>
+            <th>Em branco</th>
+            <th>% de erro</th>
+          </tr>
+        </thead>
+        <tbody id="questionStatsBody">
+          <tr><td colspan="7">Carregando...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
     <h3>Tentativas enviadas</h3>
     <div class="tablewrap">
       <table>
