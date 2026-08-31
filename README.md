@@ -27,7 +27,7 @@ Esta versão foi pensada para publicar no **GitHub Pages** e salvar os resultado
 1. Crie uma planilha em [sheets.google.com](https://sheets.google.com).
 2. Vá em **Extensões > Apps Script**.
 3. Apague o conteúdo padrão e cole o conteúdo do arquivo [`google-apps-script/Code.gs`](google-apps-script/Code.gs) deste repositório.
-4. No topo do script, troque o valor de `ADMIN_PASSWORD` pela senha que você vai usar para entrar em `admin.html`.
+4. No topo do script já vem uma senha definida em `ADMIN_PASSWORD` — troque se quiser usar outra.
 5. Clique em **Implantar > Nova implantação**.
    - Tipo: **Aplicativo da Web**.
    - Executar como: **Eu**.

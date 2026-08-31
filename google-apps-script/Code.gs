@@ -3,7 +3,8 @@
 // implantação > Tipo: Aplicativo da Web > Executar como: Eu > Quem tem
 // acesso: Qualquer pessoa) e copie a URL para o config.js do site.
 
-var ADMIN_PASSWORD = "TROQUE_ESTA_SENHA";
+// Senha já definida. Troque aqui se quiser usar outra.
+var ADMIN_PASSWORD = "iI6Rjh4WZz0AI93ud9NM";
 var SHEET_NAME = "attempts";
 
 var HEADERS = [
