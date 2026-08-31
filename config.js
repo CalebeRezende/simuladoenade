@@ -1,4 +1,9 @@
-// CONFIGURAÇÃO DO SUPABASE
-// URL sem /rest/v1 no final.
-window.SUPABASE_URL = "https://sdaxxrphbvxroertnofnw.supabase.co";
-window.SUPABASE_ANON_KEY = "sb_publishable_qB03yFr7MZg2va7FZZg0oA_wKf8rJHW";
+// CONFIGURAÇÃO DA PLANILHA (Google Apps Script)
+// 1. Crie uma Google Sheets em https://sheets.google.com
+// 2. Vá em Extensões > Apps Script, cole o conteúdo de google-apps-script/Code.gs
+// 3. Troque a constante ADMIN_PASSWORD no topo do script.
+// 4. Implantar > Nova implantação > Tipo: Aplicativo da Web
+//    Executar como: Eu | Quem tem acesso: Qualquer pessoa
+// 5. Copie a URL do Web App e cole abaixo.
+
+window.SHEETS_WEBAPP_URL = "COLE_AQUI_A_URL_DO_APPS_SCRIPT";

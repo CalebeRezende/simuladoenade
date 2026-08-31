@@ -1,7 +1,7 @@
 
-import { getSupabase } from "./supabaseClient.js";
+import { isConfigured, listAttempts } from "./dataClient.js";
 
-let supabase = null;
+const PASSWORD_KEY = "enade_admin_password";
 let attemptsCache = [];
 
 const el = (id) => document.getElementById(id);
@@ -25,17 +25,30 @@ function csvEscape(value) {
   return `"${str}"`;
 }
 
-async function init() {
+async function tryLoad(password) {
   try {
-    supabase = getSupabase();
+    attemptsCache = await listAttempts(password);
+    return { ok: true };
   } catch (err) {
-    el("loginStatus").innerHTML = `<div class="alerta warn"><strong>Configuração pendente:</strong> ${err.message}</div>`;
+    return { ok: false, error: err.message };
+  }
+}
+
+async function init() {
+  if (!isConfigured()) {
+    el("loginStatus").innerHTML = `<div class="alerta warn"><strong>Configuração pendente:</strong> edite o arquivo config.js com a URL do Apps Script.</div>`;
+    showLogin();
     return;
   }
 
-  const { data } = await supabase.auth.getSession();
-  if (data?.session) showDashboard();
-  else showLogin();
+  const savedPassword = sessionStorage.getItem(PASSWORD_KEY);
+  if (savedPassword) {
+    const result = await tryLoad(savedPassword);
+    if (result.ok) { showDashboard(); return; }
+    sessionStorage.removeItem(PASSWORD_KEY);
+  }
+
+  showLogin();
 }
 
 function showLogin() {
@@ -43,48 +56,47 @@ function showLogin() {
   el("dashboardPanel").style.display = "none";
 }
 
-async function showDashboard() {
+function showDashboard() {
   el("loginPanel").style.display = "none";
   el("dashboardPanel").style.display = "block";
-  await loadAttempts();
+  renderKpis();
+  renderTable(attemptsCache);
+  renderQuestionStats();
 }
 
 async function login() {
-  const email = el("adminEmail").value.trim();
   const password = el("adminPassword").value;
-
   el("loginStatus").textContent = "Entrando...";
 
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
-
-  if (error) {
-    el("loginStatus").innerHTML = `<div class="alerta warn"><strong>Erro:</strong> ${error.message}</div>`;
+  const result = await tryLoad(password);
+  if (!result.ok) {
+    el("loginStatus").innerHTML = `<div class="alerta warn"><strong>Erro:</strong> ${result.error}</div>`;
     return;
   }
 
+  sessionStorage.setItem(PASSWORD_KEY, password);
   el("loginStatus").textContent = "";
   showDashboard();
 }
 
-async function logout() {
-  await supabase.auth.signOut();
+function logout() {
+  sessionStorage.removeItem(PASSWORD_KEY);
+  attemptsCache = [];
   showLogin();
 }
 
 async function loadAttempts() {
+  const password = sessionStorage.getItem(PASSWORD_KEY);
+  if (!password) { showLogin(); return; }
+
   el("tableBody").innerHTML = `<tr><td colspan="9">Carregando...</td></tr>`;
 
-  const { data, error } = await supabase
-    .from("attempts")
-    .select("*")
-    .order("enviado_em", { ascending: false });
-
-  if (error) {
-    el("tableBody").innerHTML = `<tr><td colspan="9">Erro ao carregar: ${error.message}</td></tr>`;
+  const result = await tryLoad(password);
+  if (!result.ok) {
+    el("tableBody").innerHTML = `<tr><td colspan="9">Erro ao carregar: ${result.error}</td></tr>`;
     return;
   }
 
-  attemptsCache = data || [];
   renderKpis();
   renderTable(attemptsCache);
   renderQuestionStats();

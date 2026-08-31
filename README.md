@@ -1,6 +1,6 @@
-# Simulado ENADE/PND 2025 — Pedagogia com Supabase
+# Simulado ENADE/PND 2025 — Pedagogia com Google Sheets
 
-Esta versão foi pensada para publicar no **GitHub Pages** e salvar os resultados em um banco pequeno no **Supabase**.
+Esta versão foi pensada para publicar no **GitHub Pages** e salvar os resultados de graça numa **Google Sheets**, usando um Apps Script como backend.
 
 ## O que esta versão faz
 
@@ -10,7 +10,7 @@ Esta versão foi pensada para publicar no **GitHub Pages** e salvar os resultado
 - Bloqueia as respostas depois de finalizar.
 - Esconde o cartão-resposta depois da finalização.
 - Mostra a nota no formato `X de 80`.
-- Salva no Supabase:
+- Salva na planilha:
   - nome;
   - e-mail opcional;
   - prova escolhida;
@@ -19,33 +19,35 @@ Esta versão foi pensada para publicar no **GitHub Pages** e salvar os resultado
   - correção questão a questão;
   - acertos, erros, brancos e anuladas;
   - início, envio e duração.
-- Tem painel admin em `admin.html`.
+- Tem painel admin em `admin.html`, com ranking das questões mais erradas.
 - Exporta CSV.
 
-## Como configurar o Supabase
+## Como configurar a planilha (Google Apps Script)
 
-1. Crie um projeto no Supabase.
-2. Abra **SQL Editor**.
-3. Cole e rode o conteúdo do arquivo `supabase_schema.sql`.
-4. Vá em **Project Settings > API**.
-5. Copie:
-   - Project URL;
-   - anon public key.
-6. Abra o arquivo `config.js` e cole os dois valores:
+1. Crie uma planilha em [sheets.google.com](https://sheets.google.com).
+2. Vá em **Extensões > Apps Script**.
+3. Apague o conteúdo padrão e cole o conteúdo do arquivo [`google-apps-script/Code.gs`](google-apps-script/Code.gs) deste repositório.
+4. No topo do script já vem uma senha definida em `ADMIN_PASSWORD` — troque se quiser usar outra.
+5. Clique em **Implantar > Nova implantação**.
+   - Tipo: **Aplicativo da Web**.
+   - Executar como: **Eu**.
+   - Quem tem acesso: **Qualquer pessoa**.
+6. Copie a URL do Web App gerada.
+7. Abra o arquivo `config.js` e cole a URL:
 
 ```js
-window.SUPABASE_URL = "https://seu-projeto.supabase.co";
-window.SUPABASE_ANON_KEY = "sua-anon-public-key";
+window.SHEETS_WEBAPP_URL = "https://script.google.com/macros/s/SEU_ID/exec";
 ```
 
-## Como criar o admin
+A primeira tentativa enviada já cria a aba `attempts` e os cabeçalhos automaticamente.
 
-1. No Supabase, vá em **Authentication > Users**.
-2. Clique em **Add user**.
-3. Crie um usuário com seu e-mail e senha.
-4. Entre no painel `admin.html` usando esse e-mail e senha.
+### Sempre que editar o Code.gs
 
-Para segurança, recomendo ir em **Authentication > Providers > Email** e desativar cadastro público, ou manter apenas seu usuário admin criado manualmente.
+Toda alteração no script exige uma **nova implantação** (ou editar a implantação existente em **Implantar > Gerenciar implantações**) para o site passar a usar a versão nova.
+
+## Como entrar no admin
+
+Abra `admin.html` e digite a senha definida em `ADMIN_PASSWORD` no `Code.gs`. Não existe cadastro de usuário — é só essa senha, validada pelo próprio Apps Script.
 
 ## Como publicar no GitHub Pages
 
@@ -54,7 +56,6 @@ Para segurança, recomendo ir em **Authentication > Providers > Email** e desati
    - `index.html`
    - `admin.html`
    - `config.js`
-   - `supabase_schema.sql`
    - pasta `assets`
    - pasta `pdfs`
 3. Vá em **Settings > Pages**.
@@ -83,4 +84,3 @@ Depois abra:
 ```text
 http://localhost:8000
 ```
-

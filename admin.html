@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Admin — Simulado ENADE/PND 2025</title>
   <link rel="stylesheet" href="assets/style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
 </head>
 <body>
@@ -20,13 +19,9 @@
   <section id="loginPanel" class="painel" style="display:none">
     <h2>Entrar como admin</h2>
     <p class="muted">
-      Use o e-mail e a senha do usuário criado no Supabase Auth. Para segurança, desative o cadastro público no Supabase ou permita apenas seu usuário.
+      Digite a senha de admin definida no Apps Script (constante <code>ADMIN_PASSWORD</code>).
     </p>
     <div class="controles">
-      <div>
-        <label for="adminEmail">E-mail</label>
-        <input id="adminEmail" type="email" placeholder="seu@email.com" />
-      </div>
       <div>
         <label for="adminPassword">Senha</label>
         <input id="adminPassword" type="password" placeholder="Senha" />

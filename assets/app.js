@@ -1,13 +1,6 @@
 
 import { GABARITOS, PDFS, GABARITO_LABELS, TOTAL_QUESTOES, DURACAO_MS } from "./gabaritos.js";
-import { getSupabase } from "./supabaseClient.js";
-
-let supabase = null;
-try {
-  supabase = getSupabase();
-} catch (err) {
-  console.warn(err.message);
-}
+import { submitAttempt, isConfigured } from "./dataClient.js";
 
 let state = null;
 let interval = null;
@@ -16,7 +9,7 @@ const el = (id) => document.getElementById(id);
 const now = () => Date.now();
 
 function comboKey() {
-  return "enade_pedagogia_supabase_" + el("pdfSelect").value + "_" + el("keySelect").value;
+  return "enade_pedagogia_local_" + el("pdfSelect").value + "_" + el("keySelect").value;
 }
 
 function defaultState() {
@@ -214,8 +207,8 @@ function score() {
 }
 
 async function saveAttemptRemote(s) {
-  if (!supabase) {
-    throw new Error("Supabase não configurado. Edite config.js antes de publicar.");
+  if (!isConfigured()) {
+    throw new Error("Planilha não configurada. Edite config.js antes de publicar.");
   }
 
   const startedIso = new Date(state.startedAt).toISOString();
@@ -244,14 +237,8 @@ async function saveAttemptRemote(s) {
     user_agent: navigator.userAgent
   };
 
-  const { data, error } = await supabase
-    .from("attempts")
-    .insert(payload)
-    .select("id")
-    .single();
-
-  if (error) throw error;
-  state.savedRemoteId = data.id;
+  const id = await submitAttempt(payload);
+  state.savedRemoteId = id;
   saveState();
 }
 
@@ -270,10 +257,10 @@ async function submitExam() {
 
   try {
     await saveAttemptRemote(s);
-    showResult(s, "Resultado salvo no Supabase.");
+    showResult(s, "Resultado salvo na planilha.");
   } catch (err) {
     console.error(err);
-    showResult(s, "A correção foi feita, mas não consegui salvar no Supabase. Verifique o arquivo config.js, o SQL do banco e as políticas de acesso.");
+    showResult(s, "A correção foi feita, mas não consegui salvar na planilha. Verifique o arquivo config.js e se o Apps Script está publicado corretamente.");
   }
 
   lockForm(true);
@@ -357,14 +344,14 @@ function switchExamOrKey() {
     el("timer").textContent = state.startedAt ? (state.submittedAt ? "Finalizada" : formatMs(timeLeft())) : "04:00:00";
   }
 
-  if (state.submittedAt) showResult(score(), state.savedRemoteId ? "Resultado já salvo no Supabase." : "");
+  if (state.submittedAt) showResult(score(), state.savedRemoteId ? "Resultado já salvo na planilha." : "");
 }
 
 function showConfigWarning() {
-  if (!supabase) {
+  if (!isConfigured()) {
     const div = document.createElement("div");
     div.className = "alerta warn";
-    div.innerHTML = "<strong>Supabase ainda não configurado:</strong> edite o arquivo <code>config.js</code> com a URL e a anon key do seu projeto antes de publicar.";
+    div.innerHTML = "<strong>Planilha ainda não configurada:</strong> edite o arquivo <code>config.js</code> com a URL do Apps Script antes de publicar.";
     document.querySelector("main").prepend(div);
   }
 }
