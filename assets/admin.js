@@ -1,5 +1,5 @@
 
-import { isConfigured, listAttempts } from "./dataClient.js";
+import { isConfigured, listAttempts, deleteAttempt } from "./dataClient.js";
 
 const PASSWORD_KEY = "enade_admin_password";
 let attemptsCache = [];
@@ -145,13 +145,34 @@ function renderTable(data) {
       <td>${a.prova_label || a.prova_codigo}<br><span class="muted">${a.gabarito_label || a.gabarito_codigo}</span></td>
       <td>${formatDate(a.enviado_em)}<br><span class="muted">Duração: ${formatDuration(a.duracao_segundos)}</span></td>
       <td>${formatDate(a.iniciado_em)}</td>
-      <td><button class="secondary" data-id="${a.id}">Ver</button></td>
+      <td>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="secondary" data-action="view" data-id="${a.id}">Ver</button>
+          <button class="danger" data-action="delete" data-id="${a.id}">Apagar</button>
+        </div>
+      </td>
     </tr>
   `).join("");
 
-  el("tableBody").querySelectorAll("button[data-id]").forEach(btn => {
+  el("tableBody").querySelectorAll("button[data-action='view']").forEach(btn => {
     btn.addEventListener("click", () => showDetails(btn.dataset.id));
   });
+
+  el("tableBody").querySelectorAll("button[data-action='delete']").forEach(btn => {
+    btn.addEventListener("click", () => handleDelete(btn.dataset.id));
+  });
+}
+
+async function handleDelete(id) {
+  if (!confirm("Apagar esta tentativa? Essa ação não pode ser desfeita.")) return;
+
+  const password = sessionStorage.getItem(PASSWORD_KEY);
+  try {
+    await deleteAttempt(id, password);
+    await loadAttempts();
+  } catch (err) {
+    alert("Erro ao apagar: " + err.message);
+  }
 }
 
 function populateQuestionStatsFilter() {

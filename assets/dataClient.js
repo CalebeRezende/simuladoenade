@@ -40,3 +40,7 @@ export async function listAttempts(password) {
   const json = await postToSheet_({ action: "list", password });
   return json.data;
 }
+
+export async function deleteAttempt(id, password) {
+  await postToSheet_({ action: "delete", id, password });
+}

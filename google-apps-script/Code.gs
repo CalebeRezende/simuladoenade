@@ -43,6 +43,17 @@ function doPost(e) {
       return jsonResponse_({ ok: true, data: listAttempts_() });
     }
 
+    if (body.action === "delete") {
+      if (body.password !== ADMIN_PASSWORD) {
+        return jsonResponse_({ ok: false, error: "Senha incorreta." });
+      }
+      var deleted = deleteAttempt_(body.id);
+      if (!deleted) {
+        return jsonResponse_({ ok: false, error: "Tentativa não encontrada." });
+      }
+      return jsonResponse_({ ok: true });
+    }
+
     return jsonResponse_({ ok: true, id: insertAttempt_(body) });
   } catch (err) {
     return jsonResponse_({ ok: false, error: String(err) });
@@ -77,6 +88,18 @@ function insertAttempt_(payload) {
   ];
   sheet.appendRow(row);
   return id;
+}
+
+function deleteAttempt_(id) {
+  var sheet = getSheet_();
+  var values = sheet.getDataRange().getValues();
+  for (var i = 1; i < values.length; i++) {
+    if (values[i][0] === id) {
+      sheet.deleteRow(i + 1);
+      return true;
+    }
+  }
+  return false;
 }
 
 function listAttempts_() {
