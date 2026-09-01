@@ -6,4 +6,4 @@
 //    Executar como: Eu | Quem tem acesso: Qualquer pessoa
 // 5. Copie a URL do Web App e cole abaixo.
 
-window.SHEETS_WEBAPP_URL = "COLE_AQUI_A_URL_DO_APPS_SCRIPT";
+window.SHEETS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzBFaHCdytt5IGDUQp8zV_YVbrYEyMSWOXDhGGhpJV-qw9RmQmRBt3DPux09OWo0oBCYA/exec";
