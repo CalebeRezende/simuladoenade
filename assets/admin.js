@@ -145,7 +145,7 @@ function renderTable(data) {
       <td>${a.prova_label || a.prova_codigo}<br><span class="muted">${a.gabarito_label || a.gabarito_codigo}</span></td>
       <td>${formatDate(a.enviado_em)}<br><span class="muted">Duração: ${formatDuration(a.duracao_segundos)}</span></td>
       <td>${formatDate(a.iniciado_em)}</td>
-      <td>
+      <td class="printHide">
         <div style="display:flex;gap:6px;flex-wrap:wrap">
           <button class="secondary" data-action="view" data-id="${a.id}">Ver</button>
           <button class="danger" data-action="delete" data-id="${a.id}">Apagar</button>
@@ -220,6 +220,9 @@ function renderQuestionStats() {
   populateQuestionStatsFilter();
   const select = el("questionStatsFilter");
   const gabaritoCodigo = select.value;
+  const gabaritoLabel = select.options[select.selectedIndex]?.textContent || "";
+
+  el("questionStatsGabaritoLabel").textContent = gabaritoLabel ? `Gabarito analisado: ${gabaritoLabel}` : "";
 
   if (!gabaritoCodigo) {
     el("questionStatsBody").innerHTML = `<tr><td colspan="7">Nenhuma tentativa encontrada ainda.</td></tr>`;
@@ -316,6 +319,7 @@ el("loginBtn").addEventListener("click", login);
 el("logoutBtn").addEventListener("click", logout);
 el("refreshBtn").addEventListener("click", loadAttempts);
 el("exportBtn").addEventListener("click", exportCsv);
+el("printBtn").addEventListener("click", () => window.print());
 el("searchBox").addEventListener("input", applyFilter);
 el("questionStatsFilter").addEventListener("change", renderQuestionStats);
 el("closeDialog").addEventListener("click", () => el("detailDialog").close());

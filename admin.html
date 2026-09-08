@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="assets/style.css" />
   <script src="config.js"></script>
 </head>
-<body>
+<body class="adminPage">
 <header>
   <div class="topbar">
     <h1>Admin — resultados do simulado</h1>
@@ -37,6 +37,7 @@
       <div class="answerActions">
         <button class="secondary" id="refreshBtn">Atualizar</button>
         <button class="secondary" id="exportBtn">Exportar CSV</button>
+        <button class="secondary" id="printBtn">Exportar PDF</button>
         <button class="danger" id="logoutBtn">Sair</button>
       </div>
     </div>
@@ -58,6 +59,7 @@
         <select id="questionStatsFilter"></select>
       </div>
     </div>
+    <p class="muted" id="questionStatsGabaritoLabel" style="font-weight:800"></p>
     <div class="tablewrap">
       <table>
         <thead>
@@ -90,7 +92,7 @@
             <th>Prova/Gabarito</th>
             <th>Envio</th>
             <th>Início</th>
-            <th>Detalhe</th>
+            <th class="printHide">Detalhe</th>
           </tr>
         </thead>
         <tbody id="tableBody">
