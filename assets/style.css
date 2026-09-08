@@ -187,4 +187,10 @@ dialog::backdrop { background:rgba(30,10,40,.45); }
   .grid { display:block; }
   .answerbox { max-height:none; overflow:visible; box-shadow:none; border:0; }
   .resultado { display:block !important; }
+
+  body.adminPage .controles, body.adminPage .printHide { display:none !important; }
+  body.adminPage .painel { box-shadow:none; border:1px solid #ddd; break-inside:avoid; }
+  body.adminPage .tablewrap { overflow:visible; }
+  body.adminPage table { min-width:0; width:100%; font-size:10px; table-layout:auto; }
+  body.adminPage th { position:static; }
 }
